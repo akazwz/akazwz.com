@@ -5,12 +5,19 @@ import {
 	Outlet,
 	Scripts,
 	ScrollRestoration,
+	useMatches,
 } from "react-router";
 
 import type { Route } from "./+types/root";
 import "./app.css";
 
 export function Layout({ children }: { children: React.ReactNode }) {
+	const matches = useMatches();
+
+	const includeScripts = matches.some(
+		(match) => (match.handle as { hydrate?: boolean })?.hydrate,
+	);
+
 	return (
 		<html lang="en">
 			<head>
@@ -22,7 +29,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 			<body>
 				{children}
 				<ScrollRestoration />
-				<Scripts />
+				{includeScripts ? <Scripts /> : null}
 			</body>
 		</html>
 	);

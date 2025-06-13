@@ -11,6 +11,8 @@ export function meta(_: Route.MetaArgs) {
 	];
 }
 
+export const handle = { hydrate: false };
+
 export default function Home() {
 	return (
 		<div className="min-h-dvh bg-gray-900 flex items-center justify-center p-4">
