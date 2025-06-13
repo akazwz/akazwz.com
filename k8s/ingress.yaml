@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: akazwzdotcom-ingress
+  namespace: akazwzdotcom
+  annotations:
+    cert-manager.io/cluster-issuer: akazwzdotcom-clusterissuer
+spec:
+  rules:
+    - host: akazwz.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: akazwzdotcom
+                port:
+                  number: 80
+  tls:
+  - hosts:
+      - akazwz.com
+    secretName: akazwzdotcom-tls

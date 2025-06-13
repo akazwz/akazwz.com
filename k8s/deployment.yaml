@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: akazwzdotcom-deployment
+  namespace: akazwzdotcom
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: akazwzdotcom
+  template:
+    metadata:
+      labels:
+        app: akazwzdotcom
+    spec:
+      containers:
+        - name: akazwzdotcom
+          image: akazwz/akazwzdotcom:latest
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1024Mi
+            limits:
+              cpu: 1000m
+              memory: 2048Mi
+          env:
+            - name: NODE_ENV
+              value: production
