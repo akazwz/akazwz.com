@@ -4,7 +4,7 @@ metadata:
   name: akazwzdotcom-deployment
   namespace: akazwzdotcom
 spec:
-  replicas: 4
+  replicas: 3
   selector:
     matchLabels:
       app: akazwzdotcom
@@ -15,16 +15,16 @@ spec:
     spec:
       containers:
         - name: akazwzdotcom
-          image: akazwz/akazwzdotcom:latest
+          image: akazwz/akazwzdotcom:853fac6
           ports:
             - containerPort: 3000
           resources:
             requests:
-              cpu: 500m
-              memory: 1024Mi
+              cpu: 100m
+              memory: 512Mi
             limits:
-              cpu: 1000m
-              memory: 2048Mi
+              cpu: 300m
+              memory: 1024Mi
           env:
             - name: NODE_ENV
               value: production
