@@ -51,6 +51,49 @@ docker run -p 3000:3000 akazwz.com
   - `clusterissuer.yaml`：证书颁发器
 - 推荐使用 cert-manager 自动管理 HTTPS 证书。
 
+### cert-manager 安装
+
+本项目依赖 [cert-manager](https://cert-manager.io/) 自动管理 HTTPS 证书。
+如未安装，请先在 Kubernetes 集群中部署 cert-manager：
+
+```bash
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.yaml
+```
+
+> 该命令会自动安装 cert-manager 的 CRDs 及相关组件。
+
+安装完成后可验证：
+
+```bash
+kubectl get pods -n cert-manager
+```
+
+应看到 cert-manager、cainjector、webhook 等 Pod 正常运行。
+
+如需使用 Helm 安装（可选）：
+
+```bash
+helm repo add jetstack https://charts.jetstack.io
+helm repo update
+helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set installCRDs=true
+```
+
+## Makefile 自动化
+
+本项目内置 Makefile，简化了镜像构建、推送与 Kubernetes 部署流程。
+
+常用命令：
+
+- `make build`         构建 Docker 镜像
+- `make push`          构建并推送镜像到仓库
+- `make update-config` 构建、推送并自动更新 k8s 部署镜像 tag
+- `make deploy`        一键部署到 Kubernetes 集群
+- `make clean`         清理本地镜像
+- `make info`          显示当前配置信息
+- `make help`          查看所有可用命令
+
+默认执行 `make all`，会依次完成构建、推送、更新配置和部署。
+
 ## 目录结构
 
 ```
