@@ -1,87 +1,75 @@
-# Welcome to React Router!
+# akazwz.com
 
-A modern, production-ready template for building full-stack React applications using React Router.
+> 个人主页 / 博客 / 作品集
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+这是 [akazwz.com](https://akazwz.com) 的主仓库，包含前端应用源码、Kubernetes 部署配置等。欢迎访问我的个人站点，了解更多项目与想法。
 
-## Features
+## 技术栈
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+- **前端框架**：React + TypeScript
+- **路由管理**：React Router
+- **样式**：Tailwind CSS
+- **构建工具**：Vite
+- **包管理**：pnpm
+- **容器化**：Docker
+- **部署编排**：Kubernetes (k8s)
+- **证书管理**：cert-manager + Let's Encrypt
 
-## Getting Started
+## 本地开发
 
-### Installation
+1. 安装依赖：
+   ```bash
+   pnpm install
+   # 或 npm install
+   ```
+2. 启动开发服务器：
+   ```bash
+   pnpm dev
+   # 或 npm run dev
+   ```
+   默认访问地址： http://localhost:5173
 
-Install the dependencies:
+## 构建与部署
 
+### 构建生产包
 ```bash
-npm install
+pnpm build
+# 或 npm run build
 ```
 
-### Development
-
-Start the development server with HMR:
-
+### Docker 构建与运行
 ```bash
-npm run dev
+docker build -t akazwz.com .
+docker run -p 3000:3000 akazwz.com
 ```
 
-Your application will be available at `http://localhost:5173`.
+### Kubernetes 部署
+- 所有 k8s 配置文件位于 `k8s/` 目录：
+  - `deployment.yaml`：应用部署
+  - `service.yaml`：服务暴露
+  - `ingress.yaml`：Ingress 入口与 TLS
+  - `clusterissuer.yaml`：证书颁发器
+- 推荐使用 cert-manager 自动管理 HTTPS 证书。
 
-## Building for Production
-
-Create a production build:
-
-```bash
-npm run build
-```
-
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
-
-```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
+## 目录结构
 
 ```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
+├── app/           # 前端应用源码
+├── k8s/           # Kubernetes 配置
+├── public/        # 静态资源
+├── Dockerfile     # Docker 镜像构建
+├── README.md      # 项目说明
+└── ...
 ```
 
-## Styling
+## 访问
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+- 线上地址：https://akazwz.com
+
+## 联系
+
+- GitHub: [akazwz](https://github.com/akazwz)
 
 ---
 
-Built with ❤️ using React Router.
+> 本项目采用现代前端技术栈与云原生部署，持续优化中，欢迎交流与建议。
