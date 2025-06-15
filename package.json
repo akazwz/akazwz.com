@@ -15,7 +15,8 @@
 		"isbot": "^5.1.28",
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0",
-		"react-router": "^7.6.2"
+		"react-router": "^7.6.2",
+		"sharp": "^0.34.2"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
