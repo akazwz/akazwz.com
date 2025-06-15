@@ -45,8 +45,8 @@ export async function loader() {
 			const topIdx = (y * imgWidth + x) * channels;
 			const bottomIdx = ((y + 1) * imgWidth + x) * channels;
 
-			const [rt, gt, bt] = data.slice(topIdx, topIdx + 3);
-			const [rb, gb, bb] = data.slice(bottomIdx, bottomIdx + 3);
+			const [rt, gt, bt] = data.subarray(topIdx, topIdx + 3);
+			const [rb, gb, bb] = data.subarray(bottomIdx, bottomIdx + 3);
 
 			const fg = `rgb(${rt},${gt},${bt})`;
 			const bg = `rgb(${rb},${gb},${bb})`;
@@ -68,7 +68,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 		<div className="min-h-dvh flex items-center justify-center p-4">
 			<div className="max-w-lg mx-auto text-center space-y-8">
 				<pre
-					className="text-[6px] leading-none font-mono whitespace-pre overflow-hidden"
+					className="text-[clamp(2px,1vw,6px)] leading-none font-mono whitespace-pre overflow-hidden"
 					// biome-ignore lint/security/noDangerouslySetInnerHtml: 已确认数据安全，直接插入 HTML
 					dangerouslySetInnerHTML={{ __html: ascii }}
 				/>

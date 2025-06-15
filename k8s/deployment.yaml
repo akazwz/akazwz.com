@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: akazwzdotcom
-          image: akazwz/akazwzdotcom:6705be4
+          image: akazwz/akazwzdotcom:5b5634d
           ports:
             - containerPort: 3000
           resources:
