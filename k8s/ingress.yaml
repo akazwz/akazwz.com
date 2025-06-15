@@ -14,7 +14,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: akazwzdotcom
+                name: akazwzdotcom-service
                 port:
                   number: 80
   tls:
