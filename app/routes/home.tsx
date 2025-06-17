@@ -18,19 +18,15 @@ export async function loader() {
 	const filePath = path.join(process.cwd(), "public", "akazwz.webp");
 	const targetCols = 50; // 字符列数（可调整）
 
-	// 读取原图尺寸以保持纵横比
-	const { width: srcW = 1, height: srcH = 1 } = await sharp(filePath).metadata();
-
-	// 字符几何：常见等宽字体字符高约为宽的 2 倍 (k=2)
-	// 每个字符同时表示上下两行像素，需要补偿高度
-	// 因此最终高度按 2/k 系数缩放以保持比例
+	const charAspect = 2; // 字符高 / 字符宽（等宽字体约为 2:1）
 	const resizeW = targetCols;
-	const charAspect = 1.8; // 经验系数 k = 字符高 / 字符宽，可根据字体微调
-	const resizeH = Math.round((srcH / srcW) * resizeW * 2 / charAspect);
+	// 让可视宽高相等：resizeH * charHeight / 2 ≈ resizeW * charWidth
+	// => resizeH = resizeW * 2 / charAspect
+	const resizeH = Math.round((resizeW * 2) / charAspect);
 
 	// 使用 sharp 调整尺寸并获取原始 RGBA 数据
 	const { data, info } = await sharp(filePath)
-		.resize(resizeW, resizeH)
+		.resize(resizeW, resizeH, { fit: "cover", position: "centre" })
 		.ensureAlpha()
 		.raw()
 		.toBuffer({ resolveWithObject: true });
@@ -38,9 +34,23 @@ export async function loader() {
 	const { width: imgWidth, height: imgHeight, channels } = info;
 	const rows: string[] = [];
 
-	// 每次取两行像素合成一个 '▀' 半块字符
+	const toHex = (r: number, g: number, b: number) =>
+		`#${((1 << 24) + (r << 16) + (g << 8) + b)
+			.toString(16)
+			.slice(1)}`;
+
 	for (let y = 0; y < imgHeight - 1; y += 2) {
 		let line = "";
+		let prevFg = "";
+		let prevBg = "";
+		let runBuffer = "";
+		const flush = () => {
+			if (runBuffer) {
+				line += `<span style="color:${prevFg};background-color:${prevBg}">${runBuffer}</span>`;
+				runBuffer = "";
+			}
+		};
+
 		for (let x = 0; x < imgWidth; x++) {
 			const topIdx = (y * imgWidth + x) * channels;
 			const bottomIdx = ((y + 1) * imgWidth + x) * channels;
@@ -48,11 +58,19 @@ export async function loader() {
 			const [rt, gt, bt] = data.subarray(topIdx, topIdx + 3);
 			const [rb, gb, bb] = data.subarray(bottomIdx, bottomIdx + 3);
 
-			const fg = `rgb(${rt},${gt},${bt})`;
-			const bg = `rgb(${rb},${gb},${bb})`;
+			const fg = toHex(rt, gt, bt);
+			const bg = toHex(rb, gb, bb);
 
-			line += `<span style="color:${fg};background-color:${bg}">▀</span>`;
+			if (fg === prevFg && bg === prevBg) {
+				runBuffer += "▀";
+			} else {
+				flush();
+				prevFg = fg;
+				prevBg = bg;
+				runBuffer = "▀";
+			}
 		}
+		flush();
 		rows.push(line);
 	}
 
