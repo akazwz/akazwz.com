@@ -25,7 +25,7 @@ export async function loader() {
 	// 每个字符同时表示上下两行像素，需要补偿高度
 	// 因此最终高度按 2/k 系数缩放以保持比例
 	const resizeW = targetCols;
-	const charAspect = 1.7; // 经验系数 k = 字符高 / 字符宽，可根据字体微调
+	const charAspect = 1.8; // 经验系数 k = 字符高 / 字符宽，可根据字体微调
 	const resizeH = Math.round((srcH / srcW) * resizeW * 2 / charAspect);
 
 	// 使用 sharp 调整尺寸并获取原始 RGBA 数据
