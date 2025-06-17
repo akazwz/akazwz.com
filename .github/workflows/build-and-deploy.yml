@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Build, Push & Deploy
 
 on:
   push:
@@ -43,4 +43,34 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/akazwzdotcom:${{ github.sha }}
             ghcr.io/${{ github.repository_owner }}/akazwzdotcom:latest
           cache-from: type=gha
-          cache-to: type=gha,mode=max 
+          cache-to: type=gha,mode=max
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    env:
+      DEPLOYMENT_NAME: akazwzdotcom-deployment
+      CONTAINER_NAME: akazwzdotcom
+      NAMESPACE: akazwzdotcom
+    steps:
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: v1.30.1
+
+      - name: Configure Kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "$KUBE_CONFIG_DATA" | base64 -d > $HOME/.kube/config
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+
+      - name: Update image in deployment
+        run: |
+          kubectl set image deployment/${{ env.DEPLOYMENT_NAME }} \
+            ${{ env.CONTAINER_NAME }}=ghcr.io/${{ github.repository_owner }}/akazwzdotcom:${{ github.sha }} \
+            -n ${{ env.NAMESPACE }}
+
+      - name: Verify rollout status
+        run: |
+          kubectl rollout status deployment/${{ env.DEPLOYMENT_NAME }} -n ${{ env.NAMESPACE }} 
